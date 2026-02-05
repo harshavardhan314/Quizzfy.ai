@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const [scrollHeight, setScrollHeight] = useState(0);
   const [openFaq, setOpenFaq] = useState(null);
 
+  const Navigate=useNavigate();
   // Scroll logic for the drawing line
   useEffect(() => {
     const handleScroll = () => {
@@ -45,7 +47,10 @@ const HomePage = () => {
         <h1 className="text-xl font-bold tracking-wide">
           Quzzify<span className="text-blue-500">.ai</span>
         </h1>
-        <button className="rounded-lg border border-blue-500/30 px-4 py-2 text-sm text-blue-400 backdrop-blur hover:bg-blue-500/10 transition-all">
+        <button className="rounded-lg border border-blue-500/30 px-4 py-2 text-sm text-blue-400 backdrop-blur hover:bg-blue-500/10 transition-all
+        "
+        onClick={()=>Navigate('/login')}
+        >
           Sign In
         </button>
       </nav>
@@ -60,7 +65,9 @@ const HomePage = () => {
           Quzzify.ai creates challenging AI-powered mock tests from any topic to prepare you for real exams.
         </p>
         <div className="mt-10 flex gap-4">
-          <button className="rounded-xl bg-blue-600 px-8 py-4 font-bold text-white shadow-xl shadow-blue-600/40 hover:bg-blue-500 transition-all">
+          <button className="rounded-xl bg-blue-600 px-8 py-4 font-bold text-white shadow-xl shadow-blue-600/40 hover:bg-blue-500 transition-all"
+          onClick={()=>Navigate('/login')}
+          >
             Start Practicing
           </button>
           <button className="rounded-xl border border-white/10 px-8 py-4 font-medium text-white backdrop-blur hover:bg-white/5 transition-all">
