@@ -42,7 +42,7 @@ const QuizPage = () => {
   return (
     <div className='relative min-h-screen bg-[#151518] text-white p-6 flex flex-col items-center'>
         <header className='w-full max-w-2xl flex justify-between items-center mb-10'>
-            <h1 className='text-xl font-bold text-blue-400'>Quizzy AI</h1>
+            <h1 className='text-xl font-bold text-blue-400'>Quizzfy.ai</h1>
             <span className='bg-zinc-800 px-3 py-1 rounded-full text-sm'>
                 Question {currentIndex + 1} of {quizData.length}
             </span>
