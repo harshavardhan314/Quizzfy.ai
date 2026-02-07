@@ -1,27 +1,33 @@
-const express = require('express');
-const cors = require('cors');
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-require('dotenv').config();
+import connectDB from './database/db.js'; 
+import express from 'express';           
+import cors from 'cors';                 
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
+
+// Connect to MongoDB Atlas
+connectDB();
+
 app.use(cors());
 app.use(express.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
+// --- QUIZ GENERATION ENDPOINT ---
 app.post('/api/generate-quiz', async (req, res) => {
   const { topic, difficulty, count } = req.body;
 
   try {
-    // 1. Initialize Gemini 3 Flash (2026 Preview Model)
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash", // Updated to current stable 1.5-flash
       generationConfig: { 
-        responseMimeType: "application/json" // Native JSON mode
+        responseMimeType: "application/json" 
       }
     });
 
-    // 2. Clear prompt with explicit JSON instructions
     const prompt = `Generate a ${difficulty} level quiz about ${topic} with ${count} questions. 
     Return strictly a JSON array: [{"id": 1, "question": "...", "options": ["A", "B", "C", "D"], "answer": "Exact correct string from options"}].`;
 
@@ -29,10 +35,7 @@ app.post('/api/generate-quiz', async (req, res) => {
     const text = result.response.text();
     
     console.log("AI Generated Data Successfully");
-
-    // 3. Parse and return
-    const quizArray = JSON.parse(text);
-    res.json(quizArray);
+    res.json(JSON.parse(text));
 
   } catch (error) {
     console.error("AI Error:", error.message);
@@ -40,16 +43,16 @@ app.post('/api/generate-quiz', async (req, res) => {
   }
 });
 
+// --- FEEDBACK ENDPOINT ---
 app.post('/api/generate-feedback', async (req, res) => {
   const { quizData, userAnswers, topic } = req.body;
 
   try {
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash-preview",
+      model: "gemini-1.5-flash",
       generationConfig: { responseMimeType: "application/json" }
     });
 
-    // Create a summary of performance for the AI
     const performanceSummary = quizData.map((q, idx) => ({
       question: q.question,
       correct: userAnswers[idx] === q.answer,
@@ -60,12 +63,12 @@ app.post('/api/generate-feedback', async (req, res) => {
     const prompt = `Review this quiz performance on "${topic}": ${JSON.stringify(performanceSummary)}.
     Generate a feedback report in JSON format:
     {
-      "overallPerformance": "A brief summary of how they did",
-      "laggingConcepts": ["Concept 1", "Concept 2"],
-      "areasToImprove": ["Specific skill 1", "Specific skill 2"],
-      "skippedOrWeakTopics": ["Topic 1"],
-      "actionPlan": ["Step 1", "Step 2"],
-      "encouragement": "A motivating closing sentence"
+      "overallPerformance": "summary",
+      "laggingConcepts": [],
+      "areasToImprove": [],
+      "skippedOrWeakTopics": [],
+      "actionPlan": [],
+      "encouragement": "text"
     }`;
 
     const result = await model.generateContent(prompt);
@@ -75,5 +78,5 @@ app.post('/api/generate-feedback', async (req, res) => {
   }
 });
 
-const PORT = 5000;
-app.listen(PORT, () => console.log(`Backend live on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Backend live on port ${PORT}`));
