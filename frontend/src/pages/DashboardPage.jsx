@@ -20,7 +20,7 @@ const DashboardPage = () => {
     const res = await fetch('http://localhost:5000/api/generate-quiz', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({  
         topic: formData.topic, 
         difficulty: formData.difficulty, 
         count: formData.count 
@@ -29,7 +29,7 @@ const DashboardPage = () => {
 
     const data = await res.json();
     
-    // PASS DATA TO THE NEXT PAGE HERE
+
     navigate('/test', { state: { questions: data } });
 
   } catch (err) {
@@ -61,7 +61,7 @@ const DashboardPage = () => {
           </button>
         </header>
 
-        {/* --- MODAL --- */}
+        
         {isQuizPopupOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
             <div className="bg-[#0a0a0a] border border-zinc-800 w-full max-w-md p-8 rounded-3xl relative">
