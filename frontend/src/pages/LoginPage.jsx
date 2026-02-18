@@ -31,11 +31,25 @@ const LoginPage = () => {
       });
 
       
-      if (!res.ok) {
-        const errorData = await res.json().catch(() => ({ error: "Server Error" }));
-        alert(errorData.error || "Something went wrong");
+          if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ message: "Server Error" }));
+
+        if (res.status === 404) {
+          alert("Email not found. Please register first.");
+        } 
+        else if (res.status === 401) {
+          alert("Incorrect password. Please try again.");
+        } 
+        else if (res.status === 400) {
+          alert(errorData.message || "Missing fields.");
+        } 
+        else {
+          alert(errorData.message || "Something went wrong.");
+        }
+
         return;
       }
+
 
       const data = await res.json();
       
