@@ -98,7 +98,7 @@ const ResultsPage = () => {
         </div>
 
         <button 
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/dashboard')}
           className="w-full py-5 bg-zinc-900 hover:bg-white hover:text-black text-white font-bold rounded-2xl border border-zinc-800 transition-all flex items-center justify-center gap-3 active:scale-95"
         >
           Return to Dashboard <FiArrowRight size={20}/>

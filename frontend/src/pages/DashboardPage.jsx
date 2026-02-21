@@ -57,6 +57,7 @@ const DashboardPage = () => {
             label="My Profile" 
             onClick={() => navigate('/profile')} 
           />
+           
         </nav>
       </aside>
 
@@ -72,12 +73,23 @@ const DashboardPage = () => {
             />
           </div>
           
-          <button 
+          <div className='flex justify-center gap-4'>
+            <button 
             onClick={() => setIsQuizPopupOpen(true)} 
             className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all active:scale-95"
-          >
+            >
             <FiPlus size={20} /> Create New Quiz
           </button>
+
+          <button 
+            onClick={() => navigate('/profile')} 
+            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all active:scale-95"
+            >
+            <FiUser size={20} /> profile
+          </button>
+
+          </div>
+          
         </header>
 
         {/* Quiz Setup Popup */}
