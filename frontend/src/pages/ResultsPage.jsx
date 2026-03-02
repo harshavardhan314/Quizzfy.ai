@@ -30,7 +30,7 @@ const ResultsPage = () => {
         if (!res.ok) throw new Error("Server error");
         
         const data = await res.json();
-        setFeedback(data.aiFeedback);
+        setFeedback(data);
       } catch (err) {
         console.error("Feedback error:", err);
         // Set fallback data so UI doesn't break
