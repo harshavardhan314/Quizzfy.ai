@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { FiClock, FiCheckCircle, FiCircle, FiChevronLeft, FiChevronRight, FiSend } from 'react-icons/fi';
+import { FiClock, FiCheckCircle, FiChevronLeft, FiChevronRight, FiSend } from 'react-icons/fi';
 
 const QuizPage = () => {
   const location = useLocation();
@@ -62,7 +62,7 @@ const QuizPage = () => {
     );
   }
 
-  // 6. RENDER LOGIC: FINISH SCREEN (Hand-off to AI Feedback)
+  // 6. RENDER LOGIC: FINISH SCREEN
   if (isFinished) {
     const finalScore = calculateFinalScore();
     return (
@@ -97,9 +97,18 @@ const QuizPage = () => {
     );
   }
 
-  // 7. MAIN UI
+  // 7. MAIN UI & SAFETY GUARD
   const currentQuestion = quizData[currentIndex];
   const answeredCount = Object.keys(userAnswers).length;
+
+  // This guard prevents the "Cannot read properties of undefined (reading 'question')" error
+  if (!currentQuestion) {
+    return (
+      <div className="min-h-screen bg-[#050505] text-white flex flex-col items-center justify-center">
+        <p className="text-zinc-400">Loading question data...</p>
+      </div>
+    );
+  }
 
   return (
     <div className='min-h-screen bg-[#050505] text-zinc-300 flex overflow-hidden'>
@@ -125,11 +134,11 @@ const QuizPage = () => {
           </div>
 
           <h2 className='text-3xl font-bold text-white mb-12 leading-snug'>
-            {currentQuestion.question}
+            {currentQuestion?.question}
           </h2>
 
           <div className='grid gap-4'>
-            {currentQuestion.options.map((option, index) => (
+            {currentQuestion?.options?.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswer(option)}

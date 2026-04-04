@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiGrid, FiBookOpen, FiPlus, FiX, FiClock, FiSearch, FiUser } from 'react-icons/fi';
+import { FiGrid, FiBookOpen, FiPlus, FiX, FiSearch, FiUser, FiLogOut } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
@@ -20,18 +20,11 @@ const DashboardPage = () => {
       const res = await fetch('http://localhost:5000/api/generate-quiz', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({  
-          topic: formData.topic, 
-          difficulty: formData.difficulty, 
-          count: formData.count 
-        })
+        body: JSON.stringify(formData)
       });
 
       const data = await res.json();
-      
-      // Navigate to test page with the generated data
       navigate('/test', { state: { questions: data } });
-
     } catch (err) {
       console.error("Failed to generate quiz:", err);
       alert("Error generating quiz. Please check if your backend is running.");
@@ -44,9 +37,11 @@ const DashboardPage = () => {
     <div className="flex min-h-screen bg-black text-zinc-400 font-sans">
       {/* Sidebar */}
       <aside className="w-64 bg-[#050505] border-r border-zinc-900 p-6 hidden lg:flex flex-col">
-        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent mb-10">Quizzfy.ai</h1>
+        <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-500 to-cyan-300 bg-clip-text text-transparent mb-10">
+          Quizzfy.ai
+        </h1>
         
-        <nav className="space-y-2">
+        <nav className="flex-1 space-y-2">
           <NavItem 
             icon={<FiGrid size={18}/>} 
             label="Dashboard" 
@@ -57,8 +52,22 @@ const DashboardPage = () => {
             label="My Profile" 
             onClick={() => navigate('/profile')} 
           />
-           
+          
+          <div className="pt-4 mt-4 border-t border-zinc-900">
+            <button 
+              onClick={() => setIsQuizPopupOpen(true)}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white transition-all active:scale-95 group"
+            >
+              <FiPlus size={20} className="group-hover:rotate-90 transition-transform duration-300" />
+              <span className="font-bold text-sm">Create Quiz</span>
+            </button>
+          </div>
         </nav>
+
+        {/* Optional Logout at bottom */}
+        <div className="mt-auto">
+           <NavItem icon={<FiLogOut size={18}/>} label="Logout" />
+        </div>
       </aside>
 
       {/* Main Content */}
@@ -68,28 +77,20 @@ const DashboardPage = () => {
             <FiSearch className="absolute left-3 top-3 text-zinc-600" size={18} />
             <input 
               type="text" 
-              placeholder="Search..." 
+              placeholder="Search your quizzes..." 
               className="w-full bg-[#0a0a0a] border border-zinc-800 rounded-xl py-2.5 pl-10 pr-4 text-sm focus:border-blue-600 outline-none transition-all" 
             />
           </div>
           
-          <div className='flex justify-center gap-4'>
-            <button 
-            onClick={() => setIsQuizPopupOpen(true)} 
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all active:scale-95"
-            >
-            <FiPlus size={20} /> Create New Quiz
-          </button>
-
-          <button 
-            onClick={() => navigate('/profile')} 
-            className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl font-semibold flex items-center gap-2 transition-all active:scale-95"
-            >
-            <FiUser size={20} /> profile
-          </button>
-
+          <div className="flex items-center gap-4">
+             <div className="text-right hidden sm:block">
+                <p className="text-sm font-bold text-white leading-none">Welcome back</p>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-tighter">Student Account</p>
+             </div>
+             <div className="h-10 w-10 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-blue-400">
+                <FiUser size={20} />
+             </div>
           </div>
-          
         </header>
 
         {/* Quiz Setup Popup */}
@@ -103,7 +104,8 @@ const DashboardPage = () => {
                 <FiX size={24} />
               </button>
               
-              <h3 className="text-2xl font-bold text-white mb-6">Quiz Settings</h3>
+              <h3 className="text-2xl font-bold text-white mb-2">New Quiz</h3>
+              <p className="text-sm text-zinc-500 mb-6">Configure your AI-generated assessment.</p>
 
               <div className="space-y-4">
                 <div>
@@ -131,7 +133,7 @@ const DashboardPage = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Count</label>
+                    <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">Questions</label>
                     <input 
                       type="number" 
                       min="1"
@@ -158,11 +160,11 @@ const DashboardPage = () => {
         {/* Placeholder for Empty State */}
         {!quizData && !loading && (
           <div className="flex flex-col items-center justify-center h-[60vh] text-center">
-            <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center mb-4 text-blue-500">
+            <div className="w-16 h-16 bg-zinc-900 rounded-2xl flex items-center justify-center mb-4 text-blue-500 shadow-lg shadow-blue-500/10">
               <FiBookOpen size={32} />
             </div>
-            <h2 className="text-xl font-bold text-white mb-2">No Quizzes Yet</h2>
-            <p className="max-w-xs text-sm">Click the button above to generate your first AI-powered quiz.</p>
+            <h2 className="text-xl font-bold text-white mb-2">Ready to learn?</h2>
+            <p className="max-w-xs text-sm text-zinc-500">Use the sidebar to create your first AI-powered quiz and test your knowledge.</p>
           </div>
         )}
       </main>
@@ -176,7 +178,7 @@ const NavItem = ({ icon, label, active = false, onClick }) => (
     className={`
       flex items-center gap-3 px-4 py-3 rounded-xl cursor-pointer transition-all duration-200
       ${active 
-        ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20' 
+        ? 'bg-blue-600/10 text-blue-400 border border-blue-600/20 shadow-sm shadow-blue-500/5' 
         : 'text-zinc-500 hover:text-zinc-200 hover:bg-white/5'
       }
     `}
